@@ -12,10 +12,9 @@ class HourlyEditPanel(GUIBase):
         super().__init__()
         self.root.title('Edit Info')
         self.id = id
-        
     
     def run_edit_panel(self) -> None:
-        
+        """Create the GUI for the edit panel."""
         self.employee_list = fetch_employee_by_value('id', self.id, Tables.HOURLYTABLE.value)
         try:
             self.employee = self.employee_list[0]
@@ -56,6 +55,7 @@ class HourlyEditPanel(GUIBase):
         ttk.Entry(self.frame, textvariable=self.new_hours_worked).grid(column=5, row=1, sticky=(E,W))
     
         def submit_edits():
+            """Submit the new values given to the database."""
             if not self.new_first_name.get() or not self.new_last_name.get():
                 Popup('Please insert a first and last name.').show_popup()
                 return

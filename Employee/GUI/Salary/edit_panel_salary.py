@@ -2,18 +2,26 @@ from tkinter import StringVar, E, W
 from tkinter import ttk
 from GUI.GUI_base import GUIBase
 from Database.database import update_info
+from Database.database import fetch_employee_by_value
 from Enumerators.tables import Tables
 from Enumerators.roles import Roles
 from GUI.popup import Popup
 
 class SalaryEditPanel(GUIBase):
-    def __init__(self, id, employee):
+    def __init__(self, id):
         super().__init__()
         self.root.title('Edit Info')
         self.id = id
-        self.employee = employee
     
     def run_edit_panel(self) -> None:
+        """Create the GUI."""
+        self.employee_list = fetch_employee_by_value('id', self.id, Tables.SALARYTABLE.value)
+        try:
+            self.employee = self.employee_list[0]
+        except IndexError:
+            Popup(f'No Employee with ID {self.id} found.').show_popup()
+            return
+        
         self.new_first_name = StringVar(value=self.employee[1])
         self.new_last_name = StringVar(value=self.employee[2])
         self.new_email = StringVar(value=self.employee[3])
@@ -44,6 +52,7 @@ class SalaryEditPanel(GUIBase):
         ttk.Entry(self.frame, textvariable=self.new_salary).grid(column=4, row=1, sticky=(E,W))
     
         def submit_edits():
+            """Submit the new values given to the database."""
             if not self.new_first_name.get() or not self.new_last_name.get():
                 Popup('Please insert a first and last name.').show_popup()
                 return

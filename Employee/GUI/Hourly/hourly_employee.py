@@ -11,6 +11,7 @@ class HourlyEmployeeGUI(GUIBase):
         self.root.title('Hourly Employee')
         
     def create_hourly_gui(self) -> None:
+        """Create the GUI."""
         self.first_name = StringVar()
         self.last_name = StringVar()
         self.hourly_pay_rate = StringVar()
@@ -35,6 +36,7 @@ class HourlyEmployeeGUI(GUIBase):
             x += 1
 
         def submit_hourly_values() -> None:
+            """Submit the values given to the database."""
             if not self.first_name.get() or not self.last_name.get():
                 Popup('Please insert a first and last name.').show_popup()
                 return
@@ -60,5 +62,3 @@ class HourlyEmployeeGUI(GUIBase):
         ttk.Button(self.frame, text='Submit', command=submit_hourly_values).grid(column=4, row=1, sticky=(W,E))
         
         self.grid_config()
-
-        self.root.mainloop()

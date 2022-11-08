@@ -18,6 +18,7 @@ class FindHourlyEmployee(GUIBase):
         self.date = StringVar()
         
     def print_res(self, res: list) -> None:
+        """Print all employees found to the console."""
         if not res:
             Popup('No Employees found.').show_popup()
             return
@@ -26,11 +27,13 @@ class FindHourlyEmployee(GUIBase):
             print(i)
             
     def find_employee_by_name(self) -> None:
+        """"Find all employees matching the name given."""
         full_name = self.name.get().split(' ')
         res = fetch_employee_by_name(full_name, Tables.HOURLYTABLE.value)
         self.print_res(res)
     
     def find_employee_by_id(self) -> None:
+        """Find all employees matching the ID given."""
         try:
             int(self.id.get())
         except ValueError:
@@ -41,6 +44,7 @@ class FindHourlyEmployee(GUIBase):
         self.print_res(res)
     
     def find_employee_by_hourly_pay(self) -> None:
+        """Find all employees matching the hourly pay given."""
         try:
             float(self.hourly_pay.get())
         except ValueError:
@@ -51,6 +55,7 @@ class FindHourlyEmployee(GUIBase):
         self.print_res(res)
     
     def find_employee_by_hours_worked(self) -> None:
+        """Find all employees matching the hours worked."""
         try:
             float(self.hours_worked_sv.get())
         except ValueError:
@@ -61,6 +66,7 @@ class FindHourlyEmployee(GUIBase):
         self.print_res(res)
 
     def run_find_hourly_mainloop(self) -> None:
+        """Create the GUI."""
         ttk.Label(self.frame, text='Find Employee by name').grid(column=0, row=1, sticky=(E,W))
         ttk.Entry(self.frame, textvariable=self.name).grid(column=0, row=2, sticky=(E,W))
         ttk.Button(self.frame, text='Submit', command=self.find_employee_by_name).grid(column=0, row=3, sticky=(E,W))
@@ -77,5 +83,4 @@ class FindHourlyEmployee(GUIBase):
         ttk.Entry(self.frame, textvariable=self.hourly_pay).grid(column=3, row=2, sticky=(E,W))
         ttk.Button(self.frame, text='Submit', command=self.find_employee_by_hours_worked).grid(column=3, row=3, sticky=(E,W))
         
-        for child in self.frame.winfo_children(): 
-            child.grid_configure(padx=5, pady=5)
+        self.grid_config()

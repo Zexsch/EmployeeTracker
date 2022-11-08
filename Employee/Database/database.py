@@ -8,7 +8,8 @@ from enum import Enum
 
 PATH = PurePath(__file__).parent / Databases.EMPLOYEEDB.value
 
-def initialise_tables() -> None:    
+def initialise_tables() -> None:
+    """Initialise all DB tables."""
     with sqlite3.connect(PATH) as con:
         cur = con.cursor()
         try:
@@ -19,6 +20,7 @@ def initialise_tables() -> None:
 
 def insert_hourly_employee(first_name: str, last_name: str, hourly_pay_rate: float, 
                            hours_worked: float, role: Enum) -> None:
+    """Insert a new hourly employee into the database."""
     email = f'{first_name}.{last_name}@{Company.COMPANY_NAME.value}.com'
     today = date.today()
     with sqlite3.connect(PATH) as con:
@@ -28,6 +30,7 @@ def insert_hourly_employee(first_name: str, last_name: str, hourly_pay_rate: flo
                     (first_name.capitalize(), last_name.capitalize(), email, role, today, hourly_pay_rate, hours_worked))
 
 def insert_salary_employee(first_name: str, last_name: str, salary: float, role: Enum) -> None:
+    """Insert a new salary employee into the database."""
     email = f'{first_name}.{last_name}@{Company.COMPANY_NAME.value}.com'
     today = date.today()
     with sqlite3.connect(PATH) as con:
@@ -37,6 +40,7 @@ def insert_salary_employee(first_name: str, last_name: str, salary: float, role:
                     (first_name.capitalize(), last_name.capitalize(), email, role, today, salary))
         
 def fetch_all_employees(table: str) -> list:
+    """Fetch all employees in a table in the database."""
     with sqlite3.connect(PATH) as con:
         cur = con.cursor()
         
@@ -44,6 +48,7 @@ def fetch_all_employees(table: str) -> list:
         return res
 
 def fetch_employee_by_name(full_name: str, table: str) -> list:
+    """Return a list of all employees that match the given name."""
     with sqlite3.connect(PATH) as con:
         cur = con.cursor()
         
@@ -63,7 +68,8 @@ def fetch_employee_by_name(full_name: str, table: str) -> list:
                 
             return res
 
-def fetch_employee_by_value(key: str, value: any, table: str) -> list:
+def fetch_employee_by_value(key: str, value: str | int, table: str) -> list:
+    """Return a list of all employees that match the given key:value pair."""
     with sqlite3.connect(PATH) as con:
         cur = con.cursor()
         
@@ -72,6 +78,7 @@ def fetch_employee_by_value(key: str, value: any, table: str) -> list:
 
 def update_info(table: str, id: int,  first_name: str, last_name: str, email: str, hourly_pay: int | None,
                 hours_worked: int | None, salary: int | None) -> None:
+    """Update employee info in the database."""
     with sqlite3.connect(PATH) as con:
         cur = con.cursor()
         
@@ -81,3 +88,18 @@ def update_info(table: str, id: int,  first_name: str, last_name: str, email: st
         else:
             cur.execute(f'UPDATE {table} SET FirstName=?, LastName=?, Email=?, Salary=?, WHERE id=?', 
                         (first_name,last_name,email,salary,id))
+
+class DeleteException(Exception):
+    """Throw an Exception when the ID is out of range."""
+    pass
+
+def delete_employee(id: int, table: str) -> None:
+    """Remove an employee from the database."""
+    with sqlite3.connect(PATH) as con:
+        cur = con.cursor()
+        
+        res = cur.execute(f'SELECT * FROM {table} WHERE id=?', (id,)).fetchall()
+        if res:
+            cur.execute(f'DELETE FROM {table} WHERE id=?', (id,))
+        else:
+            raise DeleteException

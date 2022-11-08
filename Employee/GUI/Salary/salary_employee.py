@@ -16,6 +16,7 @@ class SalaryEmployeeGUI(GUIBase):
         self.role = StringVar()
         
     def create_salary_gui(self) -> None:
+        """Create the GUI."""
         ttk.Label(self.frame, text='First Name').grid(column=0, row=0, sticky=(W,E))
         ttk.Entry(self.frame, width=20, textvariable=self.first_name).grid(column=0, row=1, sticky=(W,E))
         
@@ -27,11 +28,13 @@ class SalaryEmployeeGUI(GUIBase):
         
         x = 0
         for i in Roles:
-            ttk.Radiobutton(self.frame, text=i.name.capitalize(), variable=self.role, value=i.name).grid(column=x, row=2, sticky=(W,E))
+            ttk.Radiobutton(self.frame, text=i.name.capitalize(), variable=self.role, 
+                            value=i.name).grid(column=x, row=2, sticky=(W,E))
             x += 1
         
         
         def submit_salary_values() -> None:
+            """Submit the values given to the database."""
             if not self.first_name.get() or not self.last_name.get():
                 Popup('Please insert a first and last name.').show_popup()
                 return
@@ -57,5 +60,3 @@ class SalaryEmployeeGUI(GUIBase):
         ttk.Button(self.frame, text='Submit', command=submit_salary_values).grid(column=3, row=1, sticky=(W,E))
         
         self.grid_config()
-        
-        self.root.mainloop()
